@@ -1,14 +1,14 @@
-package mobiles;
+package Model;
 
 
 public class Mobile {
 	private int mobileId;
 	private String mobileModel;
 	private String mobileBrand;
-	private	String mobileRam;
-	private String mobileRom;
+	private	int mobileRam;
+	private int mobileRom;
 	private String mobileProcessor; 
-	private String mobileBattery;
+	private int mobileBattery;
 	private String mobileCamera;
 	private String mobileConnectivities;
 	private String mobileGPS;
@@ -19,8 +19,8 @@ public class Mobile {
 	private String attachments;
 	private int availableInStack;
 	
-	public Mobile(String mobileModel, String mobileBrand, String mobileRam, String mobileRom,
-			String mobileProcessor, String mobileBattery, String mobileCamera, String mobileConnectivities,
+	public Mobile(String mobileModel, String mobileBrand, int mobileRam, int mobileRom,
+			String mobileProcessor, int mobileBattery, String mobileCamera, String mobileConnectivities,
 			String mobileGPS, String mobileDisplay, String mobileDimensions, int mobilePrice, String availableColors,
 			String attachments, int availableInStack) {
 		this.mobileModel = mobileModel;
@@ -40,8 +40,8 @@ public class Mobile {
 		this.availableInStack = availableInStack;
 	}
 	
-	public Mobile(int mobileId, String mobileModel, String mobileBrand, String mobileRam, String mobileRom,
-			String mobileProcessor, String mobileBattery, String mobileCamera, String mobileConnectivities,
+	public Mobile(int mobileId, String mobileModel, String mobileBrand, int mobileRam, int mobileRom,
+			String mobileProcessor, int mobileBattery, String mobileCamera, String mobileConnectivities,
 			String mobileGPS, String mobileDisplay, String mobileDimensions, int mobilePrice, String availableColors,
 			String attachments, int availableInStack) {
 		this.mobileId = mobileId;
@@ -80,16 +80,16 @@ public class Mobile {
 	public void setMobileBrand(String mobileBrand) {
 		this.mobileBrand = mobileBrand;
 	}
-	public String getMobileRam() {
+	public int getMobileRam() {
 		return mobileRam;
 	}
-	public void setMobileRam(String mobileRam) {
+	public void setMobileRam(int mobileRam) {
 		this.mobileRam = mobileRam;
 	}
-	public String getMobileRom() {
+	public int getMobileRom() {
 		return mobileRom;
 	}
-	public void setMobileRom(String mobileRom) {
+	public void setMobileRom(int mobileRom) {
 		this.mobileRom = mobileRom;
 	}
 	public String getMobileProcessor() {
@@ -98,10 +98,10 @@ public class Mobile {
 	public void setMobileProcessor(String mobileProcessor) {
 		this.mobileProcessor = mobileProcessor;
 	}
-	public String getMobileBattery() {
+	public int getMobileBattery() {
 		return mobileBattery;
 	}
-	public void setMobileBattery(String mobileBattery) {
+	public void setMobileBattery(int mobileBattery) {
 		this.mobileBattery = mobileBattery;
 	}
 	public String getMobileCamera() {
@@ -160,12 +160,12 @@ public class Mobile {
 	}
 	@Override
 	public String toString() {
-		return "Mobile [\nmobileId=" + mobileId + ",\n mobileModel=" + mobileModel + ",\n mobileBrand=" + mobileBrand
+		return "Mobile [\n mobileId=" + mobileId + ",\n mobileModel=" + mobileModel + ",\n mobileBrand=" + mobileBrand
 				+ ",\n mobileRam=" + mobileRam + ",\n mobileRom=" + mobileRom + ",\n mobileProcessor=" + mobileProcessor
 				+ ",\n mobileBattery=" + mobileBattery + ",\n mobileCamera=" + mobileCamera + ",\n mobileConnectivities="
 				+ mobileConnectivities + ",\n mobileGPS=" + mobileGPS + ",\n mobileDisplay=" + mobileDisplay
 				+ ",\n mobileDimensions=" + mobileDimensions + ",\n mobilePrice=" + mobilePrice + ",\n availableColors="
-				+ availableColors + ", attachments=" + attachments + ", availableInStack=" + availableInStack
+				+ availableColors + ",\n attachments=" + attachments + ",\n availableInStack=" + availableInStack
 				+  "\n]";
 	}
 	
