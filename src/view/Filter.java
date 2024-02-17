@@ -3,7 +3,7 @@ package view;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import Model.Mobile;
+import Objects.Mobile;
 
 public class Filter {
 	public void getMobileFilter(List<Mobile> listOfMobile, Scanner sc)

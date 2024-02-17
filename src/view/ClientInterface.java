@@ -2,31 +2,32 @@ package view;
 
 import java.util.*;
 
-import Controller.BillController;
-import Controller.CartController;
-import Controller.MobileController;
-import Controller.OrderController;
-import Model.Bill;
-import Model.Cart;
-import Model.Order;
-import Model.User;
+import Models.BillDAO;
+import Models.CartDAO;
+import Models.MobileDAO;
+import Models.OrderDAO;
+import Objects.Bill;
+import Objects.Cart;
+import Objects.Order;
+import Objects.User;
 
 public class ClientInterface {
 	public void clientOperation(Scanner sc, User userObject)
 	{
 		Filter fl = new Filter();
-		MobileController mmo = new MobileController();
-		CartController cmo = new CartController();
-		OrderController omo= new OrderController();
-		BillController bmo = new BillController();
+		MobileDAO mmo = new MobileDAO();
+		CartDAO cmo = new CartDAO();
+		OrderDAO omo= new OrderDAO();
+		BillDAO bmo = new BillDAO();
 		System.out.println("------------Welcome "+ userObject.getUserName()+" --------------");
 		while(true)
 		{
 			System.out.println("Enter 1 to Peek Mobile");
 			System.out.println("Enter 2 to Add to Cart");
 			System.out.println("Enter 3 to View Cart");
-			System.out.println("Enter 4 to purchase Mobile");
-			System.out.println("Enter 5 to purchase History");
+			System.out.println("Enter 4 to Remove Cart");
+			System.out.println("Enter 5 to purchase Mobile");
+			System.out.println("Enter 6 to purchase History");
 			
 			byte b = sc.nextByte();
 			switch(b)
@@ -76,42 +77,49 @@ public class ClientInterface {
 					System.out.println("entered number should be less then the size of the cart");
 					break;
 				}
-				int orderId = omo.getCurrentOrderId();
+				int orderId = bmo.getBillCount();
 				double totalAmount =0;
 				List<Integer> mobileIds = new ArrayList<>();
+				boolean bool= false;
 				for(int i=1; i<=n; i++)
 				{
-					System.out.println("Enter"+(i==1?(i+"st"):(i+"th"))+" MoblieId  (Space) count of Mobile ('enter the mobile id within your cart')");
+					System.out.println("Enter"+(i==1?(i+" st"):(i+" nd"))+" MoblieId  (Space) count of Mobile ('enter the mobile id within your cart')");
 					mobileId=sc.nextInt();
 					while(!mmo.isValidMobileId(mobileId))
 					{
-						System.out.println("!-----Sorry Entered Mobile Id is Valid--!!!!!!!!!!!!!!!");
+						System.out.println("!!!!!!!!!!!!!!!! --Sorry Entered Mobile Id is NOT Valid-- !!!!!!!!!!!!!!!");
 						System.out.println("Please ReEnter The MobileId");
 						mobileId = sc.nextInt();
 					}
+					int count=sc.nextInt();
 					if(!cmo.isMobileInCart(mobileId, userObject.getUserId()))
 					{
-						System.out.println("The entered MobileId is Not in cart!!!!!!!!!!!");
+						System.out.println("!!!!!!!!!!!!!!!!!!!! --The entered MobileId is Not in cart-- !!!!!!!!!!!");
 						omo.removeOrder(orderId);
+						bool=true;
 						break;
+					
 					}
 					if(mobileIds.contains(mobileId))
 					{
-						System.out.println("Re Entered the Mobile ID");
+						System.out.println("!!!!!!!!!!!!!!!!!!!! --Re Entered the Mobile ID-- !!!!!!!!!!!!!!!!!");
 						omo.removeOrder(orderId);
+						bool = true;
 						break;
 					}
 					mobileIds.add(mobileId);
-					int count=sc.nextInt();
 					if(mmo.getAvailable(mobileId)<count)
 					{
-						System.out.println("Sorry the choosen Mobile stock been reduced");
+						System.out.println("!!!!!!!!!!!!!!!! -- available count are "+mmo.getAvailable(mobileId)+" -- !!!!!!!!!!!!!!!");
 						omo.removeOrder(orderId);
+						bool = true;
 						break;
 					}
 					omo.addOrder(new Order(orderId, mobileId, count));
 					totalAmount = mmo.getMobilePrice(mobileId);
 				}
+				if(bool)
+					break;
 				System.out.println("Toatal Amount :		"+totalAmount);
 				
 				System.out.println("Enter 1 for Deliver and 2 for receive at shop");
@@ -136,7 +144,6 @@ public class ClientInterface {
 						}
 					}
 					int billId = bmo.addBill(new Bill(userObject.getUserId() , purchaseType, orderId, totalAmount ));
-					omo.incOrderId(orderId);
 					System.out.println("-----------------Bill----------------");
 					System.out.println(bmo.getBillById(billId));
 					List<Order> listOfOrders = omo.getOrdersById(orderId);
@@ -153,14 +160,23 @@ public class ClientInterface {
 				}
 				break;
 			case 4:
+				System.out.println("Enter the Cart Id to Remove");
+				int cartId = sc.nextInt();
+				if(cmo.removeCart(cartId))
+				{
+					System.out.println("!!!!!!!!!!!!!!!!! --Cart Removed Successfully-- !!!!!!!!!!!!!!!");
+				}
+				break;
+			case 5:
 				System.out.println("Enter Number Of Mobiles are need to Purchase");
 				n= sc.nextInt();
-				orderId = omo.getCurrentOrderId();
+				orderId = bmo.getBillCount();
 				totalAmount =0;
 				mobileIds = new ArrayList<>();
+				bool = false;
 				for(int i=1; i<=n; i++)
 				{
-					System.out.println("Enter"+(i==1?(i+"st"):(i+"th"))+" MoblieId  (Space) count of Mobile");
+					System.out.println("Enter"+(i==1?(i+" st"):(i+" nd"))+" MoblieId  (Space) count of Mobile");
 					mobileId=sc.nextInt();
 					while(!mmo.isValidMobileId(mobileId))
 					{
@@ -172,17 +188,23 @@ public class ClientInterface {
 					{
 						System.out.println("!!!!!!!!!!!!!!!  --Re Entered the Mobile ID--  !!!!!!!!!!!!!!!!!");
 						omo.removeOrder(orderId);
+						bool=true;
 						break;
 					}
 					int count=sc.nextInt();
 					if(mmo.getAvailable(mobileId)<count)
 					{
-						System.out.println("Sorry the choosen Mobile stock been reduced");
+						System.out.println("!!!!!!!!!!!!!!!!! -- available count are "+mmo.getAvailable(mobileId)+" -- !!!!!!!!!!!!!!!!");
 						omo.removeOrder(orderId);
+						bool = true;
 						break;
 					}
 					omo.addOrder(new Order(orderId, mobileId, count));
 					totalAmount = mmo.getMobilePrice(mobileId);
+				}
+				if(bool)
+				{
+					break;
 				}
 				System.out.println("Toatal Amount :		"+totalAmount);
 				
@@ -201,7 +223,6 @@ public class ClientInterface {
 				if(s.charAt(0)=='Y'||s.charAt(0)=='y')
 				{
 					int billId = bmo.addBill(new Bill(userObject.getUserId() , purchaseType, orderId, totalAmount ));
-					omo.incOrderId(orderId);
 					System.out.println("-----------------Bill----------------");
 					System.out.println(bmo.getBillById(billId));
 					List<Order> listOfOrders = omo.getOrdersById(orderId);
@@ -217,7 +238,7 @@ public class ClientInterface {
 					omo.removeOrder(orderId);
 				}
 				break;
-			case 5:
+			case 6:
 				System.out.println("-----------------Purchase History----------------");
 				List<Bill>listOfBills = bmo.getBillByUserId(userObject.getUserId());
 				if(listOfBills.isEmpty())
@@ -230,7 +251,7 @@ public class ClientInterface {
 					
 					System.out.println("Bill Id : "+bill.getBillId());
 					System.out.println("Date : "+bill.getDate());
-					List<Order> listOfOrders = omo.getOrdersById(bill.getOrderId());
+					List<Order> listOfOrders = omo.getOrdersById(bill.getBillId());
 					for(Order t: listOfOrders)
 					{
 						System.out.println(t.getMobileId() +" "+t.getCount());
